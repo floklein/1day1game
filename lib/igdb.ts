@@ -58,6 +58,17 @@ export type ComparableGame = GameSearchResult & {
   franchise: string | null;
 };
 
+export type TargetFieldAvailability = {
+  hasGenres: boolean;
+  hasThemes: boolean;
+  hasPlatforms: boolean;
+  hasGameModes: boolean;
+  hasPlayerPerspectives: boolean;
+  hasPrimaryDeveloper: boolean;
+  hasFranchise: boolean;
+  hasReleaseYear: boolean;
+};
+
 export type YearComparisonState =
   | "exact"
   | "target_is_earlier"
@@ -79,6 +90,21 @@ export type GuessComparisonResult = {
     franchiseMatch: boolean;
   };
 };
+
+export function getTargetFieldAvailability(
+  game: ComparableGame
+): TargetFieldAvailability {
+  return {
+    hasGenres: game.genres.length > 0,
+    hasThemes: game.themes.length > 0,
+    hasPlatforms: game.platforms.length > 0,
+    hasGameModes: game.gameModes.length > 0,
+    hasPlayerPerspectives: game.playerPerspectives.length > 0,
+    hasPrimaryDeveloper: Boolean(game.primaryDeveloper),
+    hasFranchise: Boolean(game.franchise),
+    hasReleaseYear: game.releaseYear !== null,
+  };
+}
 
 const IGDB_BASE_URL = "https://api.igdb.com/v4";
 const TWITCH_AUTH_URL = "https://id.twitch.tv/oauth2/token";

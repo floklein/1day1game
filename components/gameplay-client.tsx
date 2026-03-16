@@ -15,11 +15,13 @@ import { cn } from "@/lib/utils";
 import type {
   GameSearchResult,
   GuessComparisonResult,
+  TargetFieldAvailability,
   YearComparisonState,
 } from "@/lib/igdb";
 
 type GameplayClientProps = {
   targetId: number;
+  targetFieldAvailability: TargetFieldAvailability;
 };
 
 type ClueSummary = {
@@ -38,7 +40,10 @@ type ClueSummary = {
 const clueChipClassName =
   "rounded-full border px-3 py-1 text-xs font-medium tracking-wide";
 
-function clueEntriesFromSummary(clues: ClueSummary) {
+function clueEntriesFromSummary(
+  clues: ClueSummary,
+  availability: TargetFieldAvailability
+) {
   const unknownTone = "border-rose-300/30 bg-rose-400/12 text-rose-50";
   const partialTone = "border-amber-300/30 bg-amber-400/12 text-amber-50";
   const exactTone = "border-emerald-300/30 bg-emerald-400/12 text-emerald-50";
@@ -47,69 +52,109 @@ function clueEntriesFromSummary(clues: ClueSummary) {
     {
       key: "genres",
       title: "Genre",
-      value: clues.genres.length > 0 ? clues.genres.join(", ") : "Unknown",
-      tone: clues.genres.length > 0 ? exactTone : unknownTone,
+      value: !availability.hasGenres
+        ? "No genre"
+        : clues.genres.length > 0
+          ? clues.genres.join(", ")
+          : "Unknown",
+      tone: !availability.hasGenres || clues.genres.length > 0 ? exactTone : unknownTone,
     },
     {
       key: "themes",
       title: "Theme",
-      value: clues.themes.length > 0 ? clues.themes.join(", ") : "Unknown",
-      tone: clues.themes.length > 0 ? exactTone : unknownTone,
+      value: !availability.hasThemes
+        ? "No theme"
+        : clues.themes.length > 0
+          ? clues.themes.join(", ")
+          : "Unknown",
+      tone: !availability.hasThemes || clues.themes.length > 0 ? exactTone : unknownTone,
     },
     {
       key: "platforms",
       title: "Platform",
-      value: clues.platforms.length > 0 ? clues.platforms.join(", ") : "Unknown",
-      tone: clues.platforms.length > 0 ? exactTone : unknownTone,
+      value: !availability.hasPlatforms
+        ? "No platform"
+        : clues.platforms.length > 0
+          ? clues.platforms.join(", ")
+          : "Unknown",
+      tone:
+        !availability.hasPlatforms || clues.platforms.length > 0
+          ? exactTone
+          : unknownTone,
     },
     {
       key: "modes",
       title: "Mode",
-      value: clues.gameModes.length > 0 ? clues.gameModes.join(", ") : "Unknown",
-      tone: clues.gameModes.length > 0 ? exactTone : unknownTone,
+      value: !availability.hasGameModes
+        ? "No mode"
+        : clues.gameModes.length > 0
+          ? clues.gameModes.join(", ")
+          : "Unknown",
+      tone:
+        !availability.hasGameModes || clues.gameModes.length > 0
+          ? exactTone
+          : unknownTone,
     },
     {
       key: "perspectives",
       title: "Perspective",
-      value:
-        clues.playerPerspectives.length > 0
+      value: !availability.hasPlayerPerspectives
+        ? "No perspective"
+        : clues.playerPerspectives.length > 0
           ? clues.playerPerspectives.join(", ")
           : "Unknown",
-      tone: clues.playerPerspectives.length > 0 ? exactTone : unknownTone,
+      tone:
+        !availability.hasPlayerPerspectives || clues.playerPerspectives.length > 0
+          ? exactTone
+          : unknownTone,
     },
     {
       key: "developer",
       title: "Developer",
-      value:
-        clues.primaryDevelopers.length > 0
+      value: !availability.hasPrimaryDeveloper
+        ? "No developer"
+        : clues.primaryDevelopers.length > 0
           ? clues.primaryDevelopers.join(", ")
           : "Unknown",
-      tone: clues.primaryDevelopers.length > 0 ? exactTone : unknownTone,
+      tone:
+        !availability.hasPrimaryDeveloper || clues.primaryDevelopers.length > 0
+          ? exactTone
+          : unknownTone,
     },
     {
       key: "franchise",
       title: "Franchise",
-      value:
-        clues.franchises.length > 0 ? clues.franchises.join(", ") : "Unknown",
-      tone: clues.franchises.length > 0 ? exactTone : unknownTone,
+      value: !availability.hasFranchise
+        ? "No franchise"
+        : clues.franchises.length > 0
+          ? clues.franchises.join(", ")
+          : "Unknown",
+      tone:
+        !availability.hasFranchise || clues.franchises.length > 0
+          ? exactTone
+          : unknownTone,
     },
     {
       key: "year",
       title: "Release year",
-      value: clues.exactYear
-        ? `Release year: ${clues.exactYear}`
-        : clues.yearLowerBound && clues.yearUpperBound
-          ? `${clues.yearLowerBound} - ${clues.yearUpperBound}`
-          : clues.yearLowerBound
-            ? `After ${clues.yearLowerBound}`
-            : clues.yearUpperBound
-              ? `Before ${clues.yearUpperBound}`
-              : "Unknown",
-      tone: clues.exactYear
+      value: !availability.hasReleaseYear
+        ? "No release year"
+        : clues.exactYear
+          ? `${clues.exactYear}`
+          : clues.yearLowerBound && clues.yearUpperBound
+            ? `${clues.yearLowerBound} - ${clues.yearUpperBound}`
+            : clues.yearLowerBound
+              ? `After ${clues.yearLowerBound}`
+              : clues.yearUpperBound
+                ? `Before ${clues.yearUpperBound}`
+                : "Unknown",
+      tone: !availability.hasReleaseYear
         ? exactTone
-        : clues.yearLowerBound || clues.yearUpperBound
-          ? partialTone
-          : unknownTone,
+        : clues.exactYear
+          ? exactTone
+          : clues.yearLowerBound || clues.yearUpperBound
+            ? partialTone
+            : unknownTone,
     },
   ];
 }
@@ -375,7 +420,10 @@ function GuessCard({ attempt }: { attempt: GuessComparisonResult }) {
   );
 }
 
-export function GameplayClient({ targetId }: GameplayClientProps) {
+export function GameplayClient({
+  targetId,
+  targetFieldAvailability,
+}: GameplayClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GameSearchResult[]>([]);
@@ -389,7 +437,10 @@ export function GameplayClient({ targetId }: GameplayClientProps) {
   const deferredQuery = useDeferredValue(query);
   const guessedIds = useMemo(() => new Set(history.map((item) => item.guess.id)), [history]);
   const clues = useMemo(() => buildClueSummary(history), [history]);
-  const clueEntries = useMemo(() => clueEntriesFromSummary(clues), [clues]);
+  const clueEntries = useMemo(
+    () => clueEntriesFromSummary(clues, targetFieldAvailability),
+    [clues, targetFieldAvailability]
+  );
   const solved = history.some((item) => item.isCorrect);
 
   useEffect(() => {
