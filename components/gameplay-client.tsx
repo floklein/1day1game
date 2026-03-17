@@ -38,15 +38,18 @@ type ClueSummary = {
 };
 
 const clueChipClassName =
-  "rounded-full border px-3 py-1 text-xs font-medium tracking-wide";
+  "rounded-[0.8rem] border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]";
 
 function clueEntriesFromSummary(
   clues: ClueSummary,
   availability: TargetFieldAvailability
 ) {
-  const unknownTone = "border-rose-300/30 bg-rose-400/12 text-rose-50";
-  const partialTone = "border-amber-300/30 bg-amber-400/12 text-amber-50";
-  const exactTone = "border-emerald-300/30 bg-emerald-400/12 text-emerald-50";
+  const unknownTone =
+    "border-[#324055] bg-[#111927] text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]";
+  const partialTone =
+    "border-[#7f6220] bg-[#2b2312] text-[#ffe39b] shadow-[0_10px_24px_rgba(255,176,0,0.08)]";
+  const exactTone =
+    "border-[#1f6672] bg-[#0f2630] text-[#b7f2ff] shadow-[0_10px_24px_rgba(89,225,255,0.08)]";
 
   return [
     {
@@ -266,11 +269,11 @@ function FieldRow({
   const shared = new Set(sharedValues);
 
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
+    <div className="space-y-1.5">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">
         {label}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {values.map((value) => {
           const isMatch = shared.has(value);
 
@@ -280,8 +283,8 @@ function FieldRow({
               className={cn(
                 clueChipClassName,
                 isMatch
-                  ? "border-emerald-300/45 bg-emerald-400/15 text-emerald-100"
-                  : "border-white/10 bg-white/5 text-white/55"
+                  ? "border-[#1f6672] bg-[#0f2630] text-[#b7f2ff]"
+                  : "border-[#324055] bg-[#111927] text-slate-300"
               )}
             >
               {value}
@@ -295,44 +298,44 @@ function FieldRow({
 
 function GuessCard({ attempt }: { attempt: GuessComparisonResult }) {
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/6 p-4 shadow-lg shadow-black/10 backdrop-blur sm:p-5">
-      <div className="flex items-start gap-4">
+    <article className="arcade-panel rounded-[1.4rem] p-3.5 sm:p-4">
+      <div className="relative flex items-start gap-3">
         {attempt.guess.coverUrl ? (
           <Image
             src={attempt.guess.coverUrl}
             alt={attempt.guess.name}
-            width={88}
-            height={116}
-            className="h-[116px] w-[88px] rounded-2xl border border-white/10 object-cover"
+            width={72}
+            height={96}
+            className="h-24 w-[72px] rounded-[0.85rem] border border-white/10 object-cover shadow-[0_10px_24px_rgba(0,0,0,0.24)]"
           />
         ) : (
-          <div className="flex h-[116px] w-[88px] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 text-center text-xs text-white/40">
-            No cover
+          <div className="flex h-24 w-[72px] items-center justify-center rounded-[0.85rem] border border-dashed border-[#324055] bg-[#111927] text-center text-[10px] uppercase tracking-[0.12em] text-slate-500">
+            No cover art
           </div>
         )}
 
-        <div className="min-w-0 flex-1 space-y-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0 flex-1 space-y-3">
+          <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
               <h2 className="text-xl font-semibold tracking-tight text-white">
                 {attempt.guess.name}
               </h2>
-              <p className="mt-1 text-sm text-white/55">
+              <p className="mt-0.5 text-xs text-slate-400">
                 Guess #{attempt.guessNumber}
               </p>
             </div>
             {attempt.isCorrect ? (
-              <span className="rounded-full border border-emerald-300/40 bg-emerald-400/15 px-3 py-1 text-sm font-semibold text-emerald-100">
-                Correct
+              <span className="rounded-[0.75rem] border border-[#1f6672] bg-[#0f2630] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#b7f2ff]">
+                Target acquired
               </span>
             ) : (
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/60">
-                Keep going
+              <span className="rounded-[0.75rem] border border-[#324055] bg-[#111927] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
+                Signal logged
               </span>
             )}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-x-3 gap-y-2.5 sm:grid-cols-2">
             <FieldRow
               label="Genres"
               values={attempt.guess.genres}
@@ -359,16 +362,16 @@ function GuessCard({ attempt }: { attempt: GuessComparisonResult }) {
               sharedValues={attempt.comparison.sharedPlayerPerspectives}
             />
 
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
+            <div className="space-y-1.5">
+              <p className="arcade-kicker">
                 Release year
               </p>
               <span
                 className={cn(
                   clueChipClassName,
                   attempt.comparison.year === "exact"
-                    ? "border-emerald-300/45 bg-emerald-400/15 text-emerald-100"
-                    : "border-amber-300/35 bg-amber-300/12 text-amber-50"
+                    ? "border-[#1f6672] bg-[#0f2630] text-[#b7f2ff]"
+                    : "border-[#7f6220] bg-[#2b2312] text-[#ffe39b]"
                 )}
               >
                 {getYearHintLabel(
@@ -379,16 +382,16 @@ function GuessCard({ attempt }: { attempt: GuessComparisonResult }) {
             </div>
 
             {attempt.guess.primaryDeveloper ? (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
+              <div className="space-y-1.5">
+                <p className="arcade-kicker">
                   Primary developer
                 </p>
                 <span
                   className={cn(
                     clueChipClassName,
                     attempt.comparison.primaryDeveloperMatch
-                      ? "border-emerald-300/45 bg-emerald-400/15 text-emerald-100"
-                      : "border-white/10 bg-white/5 text-white/55"
+                      ? "border-[#1f6672] bg-[#0f2630] text-[#b7f2ff]"
+                      : "border-[#324055] bg-[#111927] text-slate-300"
                   )}
                 >
                   {attempt.guess.primaryDeveloper}
@@ -397,16 +400,16 @@ function GuessCard({ attempt }: { attempt: GuessComparisonResult }) {
             ) : null}
 
             {attempt.guess.franchise ? (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
+              <div className="space-y-1.5">
+                <p className="arcade-kicker">
                   Franchise
                 </p>
                 <span
                   className={cn(
                     clueChipClassName,
                     attempt.comparison.franchiseMatch
-                      ? "border-emerald-300/45 bg-emerald-400/15 text-emerald-100"
-                      : "border-white/10 bg-white/5 text-white/55"
+                      ? "border-[#1f6672] bg-[#0f2630] text-[#b7f2ff]"
+                      : "border-[#324055] bg-[#111927] text-slate-300"
                   )}
                 >
                   {attempt.guess.franchise}
@@ -442,6 +445,13 @@ export function GameplayClient({
     [clues, targetFieldAvailability]
   );
   const solved = history.some((item) => item.isCorrect);
+  const runStatusLabel = solved
+    ? "Target acquired"
+    : isGuessing
+      ? "Comparing guess"
+      : isSearching
+        ? "Scanning catalog"
+        : "Run active";
 
   useEffect(() => {
     if (deferredQuery.trim().length < 2 || solved) {
@@ -558,58 +568,69 @@ export function GameplayClient({
   }
 
   return (
-    <div className="space-y-6">
-      <header className="rounded-[2rem] border border-white/10 bg-white/6 p-6 shadow-2xl shadow-black/10 backdrop-blur sm:p-8">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Find the hidden game
+    <div className="space-y-4 pb-6">
+      <header className="arcade-panel rounded-[1.5rem] px-4 py-4 sm:px-5 sm:py-4.5">
+        <div className="arcade-grid-bg pointer-events-none absolute inset-0 opacity-60" />
+        <div className="relative flex flex-col gap-3">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="max-w-2xl">
+              <p className="arcade-kicker">Game To Guess</p>
+              <h1 className="arcade-display arcade-text-glow mt-1.5 text-3xl font-semibold leading-none sm:text-[2.2rem]">
+                Guess the hidden game
               </h1>
             </div>
-            <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-black/10">
-              {history.length} guess{history.length > 1 ? "es" : ""}
-            </div>
-          </div>
 
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
-                Cumulative clues
-              </p>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/35 p-3">
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {clueEntries.map((entry) => (
-                  <div
-                    key={entry.key}
-                    className={cn(
-                      "min-h-24 rounded-2xl border p-3",
-                      entry.tone
-                    )}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] opacity-75">
-                      {entry.title}
-                    </p>
-                    <p className="mt-3 text-sm leading-6">
-                      {entry.value}
-                    </p>
-                  </div>
-                ))}
+            <div className="flex flex-wrap gap-2">
+              <div className="arcade-status rounded-[0.8rem] px-3 py-2 text-right">
+                <p className="arcade-kicker text-[0.62rem]">Attempts</p>
+                <p className="mt-1 text-lg font-semibold text-white">
+                  {history.length}
+                </p>
+              </div>
+              <div className="arcade-status rounded-[0.8rem] px-3 py-2 text-right">
+                <p className="arcade-kicker text-[0.62rem]">Status</p>
+                <p className="mt-1 text-lg font-semibold uppercase tracking-[0.12em] text-[#59e1ff]">
+                  {runStatusLabel}
+                </p>
               </div>
             </div>
           </div>
+        </div>
+      </header>
 
-          <section className="space-y-3">
-            <div className="space-y-3">
-              <label
-                htmlFor="game-search"
-                className="block text-xs font-semibold uppercase tracking-[0.22em] text-white/45"
-              >
-                Search a game
-              </label>
-              <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/45 p-2">
+      <div className="space-y-4">
+        <section className="arcade-panel rounded-[1.45rem] p-4 sm:p-4.5">
+          <div className="relative">
+            <p className="arcade-kicker">Current Clues</p>
+            <h2 className="arcade-display mt-1.5 text-xl font-semibold text-white">
+              Clues from your guesses
+            </h2>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {clueEntries.map((entry) => (
+                <div
+                  key={entry.key}
+                  className={cn("min-h-20 rounded-[1rem] border p-3", entry.tone)}
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] opacity-75">
+                    {entry.title}
+                  </p>
+                  <p className="mt-2 text-sm leading-5">
+                    {entry.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="space-y-3">
+          <section className="arcade-panel rounded-[1.45rem] p-4 sm:p-4.5">
+            <div className="relative">
+              <p className="arcade-kicker">Choose A Guess</p>
+              <h2 className="arcade-display mt-1.5 text-xl font-semibold text-white">
+                Search for a game
+              </h2>
+              <div className="mt-3 rounded-[1.1rem] border border-[#23344c] bg-[#0a121d]/95 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <input
                   id="game-search"
                   value={query}
@@ -617,98 +638,117 @@ export function GameplayClient({
                   onKeyDown={handleKeyDown}
                   placeholder={
                     solved
-                      ? "Puzzle solved"
-                      : "Type a game title and press Enter or choose a result"
+                      ? "Game already found"
+                      : "Type a game title"
                   }
                   disabled={solved || isGuessing}
-                  className="w-full rounded-[1.25rem] bg-transparent px-4 py-3 text-base text-white outline-none placeholder:text-white/35"
+                  className="w-full rounded-[0.9rem] border border-transparent bg-transparent px-3 py-2.5 text-sm text-white outline-none placeholder:text-slate-500 focus:border-[#59e1ff]/30"
                 />
               </div>
-            </div>
 
-            {searchError ? (
-              <p className="text-sm text-rose-200">{searchError}</p>
-            ) : null}
-
-            {!solved && results.length > 0 ? (
-              <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-slate-950/70">
-                <ul className="divide-y divide-white/8">
-                  {results.map((result) => (
-                    <li key={result.id}>
-                      <button
-                        type="button"
-                        onClick={() => submitGuess(result.id)}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/6"
-                      >
-                        {result.coverUrl ? (
-                          <Image
-                            src={result.coverUrl}
-                            alt={result.name}
-                            width={44}
-                            height={58}
-                            className="h-[58px] w-[44px] rounded-xl border border-white/10 object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-[58px] w-[44px] items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/5 text-[10px] text-white/35">
-                            N/A
-                          </div>
-                        )}
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-white">
-                            {result.name}
-                          </p>
-                          <p className="text-xs text-white/50">
-                            {result.releaseYear ?? "Unknown year"}
-                          </p>
-                        </div>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-2.5 flex flex-wrap gap-2 text-xs">
+                {isSearching ? (
+                  <div className="arcade-status rounded-[0.75rem] px-2.5 py-1.5 text-slate-300">
+                    Searching games...
+                  </div>
+                ) : null}
+                {isGuessing ? (
+                  <div className="arcade-status rounded-[0.75rem] px-2.5 py-1.5 text-slate-300">
+                    Checking your guess...
+                  </div>
+                ) : null}
+                {searchError ? (
+                  <div className="rounded-[0.75rem] border border-[#6b2a34] bg-[#2c1318] px-2.5 py-1.5 text-[#ffd8dd]">
+                    {searchError}
+                  </div>
+                ) : null}
+                {guessError ? (
+                  <div className="rounded-[0.75rem] border border-[#6b2a34] bg-[#2c1318] px-2.5 py-1.5 text-[#ffd8dd]">
+                    {guessError}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
+            </div>
           </section>
+
+          {!solved && results.length > 0 ? (
+            <div className="arcade-panel-soft overflow-hidden rounded-[1.2rem]">
+              <div className="border-b border-white/8 px-3 py-2">
+                <p className="arcade-kicker">Matches</p>
+              </div>
+              <ul className="divide-y divide-white/8">
+                {results.map((result) => (
+                  <li key={result.id}>
+                    <button
+                      type="button"
+                      onClick={() => submitGuess(result.id)}
+                      className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+                    >
+                      {result.coverUrl ? (
+                        <Image
+                          src={result.coverUrl}
+                          alt={result.name}
+                          width={36}
+                          height={48}
+                          className="h-12 w-9 rounded-[0.65rem] border border-white/10 object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-12 w-9 items-center justify-center rounded-[0.65rem] border border-dashed border-[#324055] bg-[#111927] text-[9px] uppercase tracking-[0.1em] text-slate-500">
+                          N/A
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium leading-5 text-white">
+                          {result.name}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {result.releaseYear ?? "Unknown year"}
+                        </p>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {solved ? (
+            <section className="rounded-[1.45rem] border border-[#1f6672] bg-[linear-gradient(180deg,rgba(15,38,48,0.96),rgba(9,17,27,0.96))] p-4 text-[#d8fbff] shadow-[0_20px_50px_rgba(89,225,255,0.1)]">
+              <p className="arcade-kicker text-[#8beeff]">Target Acquired</p>
+              <h2 className="arcade-display mt-1.5 text-2xl font-semibold text-white">
+                Correct guess.
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-200">
+                You guessed the game in {history.length} guess
+                {history.length > 1 ? "es" : ""}.
+              </p>
+              <Button
+                type="button"
+                size="lg"
+                onClick={startRandomGame}
+                disabled={isStartingRandom}
+                className="mt-4 min-w-48 px-5"
+              >
+                {isStartingRandom ? "Loading Run" : "Start Random Run"}
+              </Button>
+            </section>
+          ) : null}
         </div>
-      </header>
+      </div>
 
-      {guessError ? (
-        <div className="rounded-2xl border border-rose-300/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">
-          {guessError}
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="arcade-kicker">Previous Guesses</p>
+            <h2 className="arcade-display mt-1 text-2xl font-semibold text-white">
+              Guess history
+            </h2>
+          </div>
         </div>
-      ) : null}
 
-      {solved ? (
-        <section className="rounded-3xl border border-emerald-300/20 bg-emerald-400/10 p-5 text-emerald-50 shadow-lg shadow-emerald-950/15">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-100/80">
-            Solved
-          </p>
-          <p className="mt-2 text-lg font-medium">
-            You found the hidden game in {history.length} guess
-            {history.length > 1 ? "es" : ""}.
-          </p>
-          <Button
-            type="button"
-            size="lg"
-            onClick={startRandomGame}
-            disabled={isStartingRandom}
-            className="mt-5 h-14 rounded-full bg-white px-8 text-base font-semibold text-slate-950 hover:bg-white/90"
-          >
-            Random
-          </Button>
-        </section>
-      ) : null}
-
-      {isSearching ? (
-        <p className="text-sm text-white/45">Searching…</p>
-      ) : null}
-      {isGuessing ? (
-        <p className="text-sm text-white/45">Comparing your guess…</p>
-      ) : null}
-
-      <section className="space-y-4 pb-10">
         {history.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.03] p-8 text-center text-white/45">
-            Your guess history will appear here.
+          <div className="arcade-panel-soft rounded-[1.35rem] border border-dashed border-[#324055] p-4 text-center text-sm text-slate-400">
+            Your guesses will appear here.
           </div>
         ) : (
           history
